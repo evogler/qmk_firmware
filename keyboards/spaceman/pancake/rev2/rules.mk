@@ -20,3 +20,6 @@ OLED_ENABLE = yes
 OLED_DRIVER = SSD1306
 
 LAYOUTS = ortho_4x12
+
+# Added by me
+COMBO_ENABLE = yes
