@@ -14,17 +14,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "rev2.h"
+#include <stdlib.h>
 
-
-#ifdef OLED_ENABLE
+// #ifdef OLED_ENABLE
 oled_rotation_t oled_init_kb(oled_rotation_t rotation) {
     return OLED_ROTATION_270;
 }
+
+int count = 0;
+char countStr[5];
+char get_mods_str[5];
+
+int pixel_pos = 0;
 
 bool oled_task_kb(void) {
     if (!oled_task_user()) {
         return false;
     }
+
+    // oled_clear();
+
     static const char PROGMEM pancake_logo[] = {
         0x00, 0x00, 0x3e, 0x0a, 0x04, 0x00, 0x3c, 0x0a, 0x3c, 0x00, 0x3e, 0x0c, 0x18, 0x3e, 0x00, 0x3e,
         0x22, 0x22, 0x00, 0x3c, 0x0a, 0x3c, 0x00, 0x3e, 0x08, 0x36, 0x00, 0x3e, 0x2a, 0x22, 0x00, 0x00,
@@ -41,19 +50,57 @@ bool oled_task_kb(void) {
 
     switch (get_highest_layer(layer_state)) {
         case 0:
-            oled_write_P(PSTR("DEFLT\n"), false);
-            break;
-        case 2:
-            oled_write_P(PSTR("FUNCT\n"), false);
+            oled_write_P(PSTR(".....\n"), false);
             break;
         case 1:
-            oled_write_P(PSTR("RAISE\n"), false);
+            oled_write_P(PSTR("12345\n"), false);
             break;
-        default:
-            // Or use the write_ln shortcut over adding '\n' to the end of your string
-            oled_write_ln_P(PSTR("Undefined"), false);
+        case 2:
+            oled_write_P(PSTR(";=:_\\\n"), false);
             break;
+        case 3:
+            oled_write_P(PSTR("UPPER\n"), false);
+            break;
+        // default:
+        //     // Or use the write_ln shortcut over adding '\n' to the end of your string
+        //     oled_write_ln_P(PSTR("Undefined"), false);
+        //     break;
     }
+
+    bool gui = (get_mods() | get_oneshot_mods()) & MOD_MASK_GUI;
+    bool alt = (get_mods() | get_oneshot_mods()) & MOD_MASK_ALT;
+    bool ctrl = (get_mods() | get_oneshot_mods()) & MOD_MASK_CTRL;
+    bool shift = (get_mods() | get_oneshot_mods()) & MOD_MASK_SHIFT;
+
+    if (gui) {
+        oled_write_P(PSTR("C"), false);
+    } else {
+        oled_write_P(PSTR(" "), false);
+    }
+
+    if (alt) {
+        oled_write_P(PSTR("A"), false);
+    } else {
+        oled_write_P(PSTR(" "), false);
+    }
+
+    if (ctrl) {
+        oled_write_P(PSTR("c"), false);
+    } else {
+        oled_write_P(PSTR(" "), false);
+    }
+
+    if (shift) {
+        oled_write_P(PSTR("S"), false);
+    } else {
+        oled_write_P(PSTR(" "), false);
+    }
+    // itoa(get_mods(), get_mods_str, 10);
+    // oled_write(get_mods_str, false);
+
+    // oled_write_pixel(pixel_pos % 32, (pixel_pos / 32) % 128, true);
+    // pixel_pos = pixel_pos + 1;
+
     return false;
 }
-#endif
+// #endif

@@ -23,3 +23,4 @@ LAYOUTS = ortho_4x12
 
 # Added by me
 COMBO_ENABLE = yes
+UNICODEMAP_ENABLE = yes
