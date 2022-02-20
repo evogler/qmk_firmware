@@ -24,3 +24,5 @@ LAYOUTS = ortho_4x12
 # Added by me
 COMBO_ENABLE = yes
 UNICODEMAP_ENABLE = yes
+TAP_DANCE_ENABLE=yes
+EXTRAFLAGS += -flto # to save space

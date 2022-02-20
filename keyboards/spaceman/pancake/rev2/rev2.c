@@ -21,8 +21,6 @@ oled_rotation_t oled_init_kb(oled_rotation_t rotation) {
     return OLED_ROTATION_270;
 }
 
-int count = 0;
-char countStr[5];
 char get_mods_str[5];
 
 int pixel_pos = 0;

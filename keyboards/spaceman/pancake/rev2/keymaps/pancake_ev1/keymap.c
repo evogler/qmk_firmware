@@ -40,6 +40,30 @@ combo_t key_combos[] = {
 };
 /* COMBO_ACTION(x) is same as COMBO(x, KC_NO) */
 
+// uint16_t n = 0;
+
+// uint16_t num_to_code(uint16_t num) {
+//     switch (num) {
+//         case 0:
+//             return KC_0;
+//         case 1 ... 9:
+//             return KC_1 + num - 1;
+//         case 10 ... 15:
+//             return KC_A + num - 10;
+//         default:
+//             return KC_NO;
+//     }
+// }
+
+// void output_num(uint16_t num) {
+//     tap_code16(KC_SPC);
+//     tap_code16(num_to_code((num >> 12) & 0x0F));
+//     tap_code16(num_to_code((num >> 8) & 0x0F));
+//     tap_code16(num_to_code((num >> 4) & 0x0F));
+//     tap_code16(num_to_code((num >> 0) & 0x0F));
+//     tap_code16(KC_SPC);
+// }
+
 void process_combo_event(uint16_t combo_index, bool pressed) {
   switch(combo_index) {
     case EM_EMAIL:
@@ -104,12 +128,18 @@ void process_repeat_key(uint16_t keycode, const keyrecord_t *record) {
             case QK_LAYER_TAP ... QK_LAYER_TAP_MAX:
             case QK_MOD_TAP ... QK_MOD_TAP_MAX:
                 if (record->event.pressed) {
-                    last_keycode = GET_TAP_KC(keycode);
+                    int code = GET_TAP_KC(keycode);
+                    // if (code != 0) {
+                        last_modifier = code;
+                    // }
                 }
                 break;
             default:
                 if (record->event.pressed) {
-                    last_keycode = keycode;
+                    int code = GET_TAP_KC(keycode);
+                    if (code != 0) {
+                        last_keycode = code;
+                    }
                 }
                 break;
         }
@@ -125,14 +155,95 @@ void process_repeat_key(uint16_t keycode, const keyrecord_t *record) {
 }
 
 
+// Tap Dance keycodes
+enum td_keycodes {
+    ALT_LP // Our example key: `LALT` when held, `(` when tapped. Add additional keycodes for each tapdance.
+};
+
+// Define a type containing as many tapdance states as you need
+typedef enum {
+    TD_NONE,
+    TD_UNKNOWN,
+    TD_SINGLE_TAP,
+    TD_SINGLE_HOLD,
+    TD_DOUBLE_SINGLE_TAP
+} td_state_t;
+
+// Create a global instance of the tapdance state type
+static td_state_t td_state;
+
+// Declare your tapdance functions:
+
+// Function to determine the current tapdance state
+td_state_t cur_dance(qk_tap_dance_state_t *state);
+
+// `finished` and `reset` functions for each tapdance keycode
+void altlp_finished(qk_tap_dance_state_t *state, void *user_data);
+void altlp_reset(qk_tap_dance_state_t *state, void *user_data);
+
+
+// Determine the tapdance state to return
+td_state_t cur_dance(qk_tap_dance_state_t *state) {
+    if (state->count == 1) {
+        if (state->interrupted || !state->pressed) return TD_SINGLE_TAP;
+        else return TD_SINGLE_HOLD;
+    }
+
+    if (state->count == 2) return TD_DOUBLE_SINGLE_TAP;
+    else return TD_UNKNOWN; // Any number higher than the maximum state value you return above
+}
+
+// Handle the possible states for each tapdance keycode you define:
+
+void altlp_finished(qk_tap_dance_state_t *state, void *user_data) {
+    td_state = cur_dance(state);
+    switch (td_state) {
+        case TD_SINGLE_TAP:
+            register_code16(last_keycode);
+            register_code16(last_modifier);
+            break;
+        case TD_SINGLE_HOLD:
+            register_mods(MOD_BIT(KC_LALT)); // For a layer-tap key, use `layer_on(_MY_LAYER)` here
+            break;
+        case TD_DOUBLE_SINGLE_TAP: // Allow nesting of 2 parens `((` within tapping term
+            tap_code16(KC_LPRN);
+            register_code16(KC_LPRN);
+            break;
+        default:
+            break;
+    }
+}
+
+void altlp_reset(qk_tap_dance_state_t *state, void *user_data) {
+    switch (td_state) {
+        case TD_SINGLE_TAP:
+            unregister_code16(last_keycode);
+            unregister_mods(last_modifier);;
+            break;
+        case TD_SINGLE_HOLD:
+            unregister_mods(MOD_BIT(KC_LALT)); // For a layer-tap key, use `layer_off(_MY_LAYER)` here
+            break;
+        case TD_DOUBLE_SINGLE_TAP:
+            unregister_code16(KC_LPRN);
+            break;
+        default:
+            break;
+    }
+}
+
+// Define `ACTION_TAP_DANCE_FN_ADVANCED()` for each tapdance keycode, passing in `finished` and `reset` functions
+qk_tap_dance_action_t tap_dance_actions[] = {
+    [ALT_LP] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, altlp_finished, altlp_reset)
+};
+
 
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	[0] = LAYOUT_ortho_4x12(
-        KC_TAB, KC_Q, KC_W, KC_F, KC_P, KC_B, KC_J, KC_L, KC_U, KC_Y, CLEAR_KEYB, KC_BSPC,
+        KC_TAB, KC_Q, KC_W, KC_F, KC_P, KC_B, KC_J, KC_L, KC_U, KC_Y, REP, KC_BSPC,
         KC_ESC, KC_A, KC_R, KC_S, KC_T, KC_G, KC_M, KC_N, KC_E, KC_I, KC_O, KC_ENT,
         OSM(MOD_LSFT), KC_Z, KC_X, KC_C, KC_D, KC_V, KC_K, KC_H, KC_COMM, KC_DOT, KC_SLSH, RSFT_T(KC_QUOT),
-        OSM(MOD_LCTL), KC_NO, OSM(MOD_LALT), OSM(MOD_LGUI), OSL(1), REP, KC_SPC, OSL(2), KC_LEFT, KC_DOWN, KC_UP, KC_RGHT
+        OSM(MOD_LCTL), KC_NO, OSM(MOD_LALT), OSM(MOD_LGUI), OSL(1),  TD(ALT_LP), KC_SPC, OSL(2), KC_LEFT, KC_DOWN, KC_UP, KC_RGHT
         ),
 	[1] = LAYOUT_ortho_4x12(
         KC_GRV, KC_EXLM, KC_AT, KC_HASH, KC_DLR, KC_PERC, KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_BSPC,
@@ -148,7 +259,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         ),
 	[3] = LAYOUT_ortho_4x12(
         RESET, FORCE_REP, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_BRID, KC_BRIU, KC_NO, KC_NO, KC_NO,
-        KC_NO, G(A(S(KC_1))), G(A(S(KC_2))), G(A(S(KC_3))), G(A(S(KC_4))), G(A(S(KC_5))), G(A(S(KC_6))), G(A(S(KC_7))), G(A(S(KC_8))), G(A(S(KC_9))), G(A(S(KC_0))), MACRO_0,
+        KC_NO, G(A(S(KC_1))), G(A(S(KC_2))), G(A(S(KC_3))), G(A(S(KC_4))), G(A(S(KC_5))), G(A(S(KC_6))), G(A(S(KC_7))), G(A(S(KC_8))), G(A(S(KC_9))), G(A(S(KC_0))), KC_NO,
         KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
         KC_NO, KC_NO, KC_NO, KC_NO, KC_TRNS, KC_NO, KC_NO, KC_TRNS, KC_MUTE, KC_VOLD, KC_VOLU, KC_NO
         ),
@@ -161,10 +272,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 
 
-
-
-// count = 0;
-char countStr[8];
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (keycode != KC_BSPC
@@ -187,12 +294,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
     if (record->event.pressed) {
         switch (keycode) {
-            case MACRO_0:
-                count = count + 1;
-                itoa(count, countStr, 10);
-                send_string(countStr);
-                // return false;
-                break;
             case FORCE_REP:
                 force_rep = !force_rep;
                 break;
