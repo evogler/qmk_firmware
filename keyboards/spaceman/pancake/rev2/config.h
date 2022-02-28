@@ -37,3 +37,5 @@
 #define ONESHOT_TIMEOUT 1500
 #define NO_ACTION_MACRO     // to save space
 #define NO_ACTION_FUNCTION  // to save space
+#define RAW_USAGE_PAGE 0xFF60 // for raw hid
+#define RAW_USAGE_ID 0x61 // for raw hids

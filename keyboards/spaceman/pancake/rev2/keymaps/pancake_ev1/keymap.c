@@ -1,6 +1,7 @@
 #include QMK_KEYBOARD_H
 #include <stdlib.h>
 #include "rev2.h"
+#include <raw_hid.h>
 
 enum custom_keycodes {
     REP = SAFE_RANGE,
@@ -62,6 +63,16 @@ combo_t key_combos[] = {
 //     tap_code16(num_to_code((num >> 4) & 0x0F));
 //     tap_code16(num_to_code((num >> 0) & 0x0F));
 //     tap_code16(KC_SPC);
+// }
+
+// void raw_hid_send(uint8_t *data, uint8_t length);
+// void send_some_hid() {
+//     uint8_t data[8] = {0x00, 0x07, 0x00, 0x09, 0x01, 0x09, 0x08, 0x00};
+//     uint8_t length = 8;
+//     raw_hid_send(data, length);
+//     tap_code16(KC_H);
+//     tap_code16(KC_I);
+//     tap_code16(KC_D);
 // }
 
 void process_combo_event(uint16_t combo_index, bool pressed) {
@@ -190,8 +201,9 @@ td_state_t cur_dance(qk_tap_dance_state_t *state) {
     }
 
     if (state->count == 2) return TD_DOUBLE_SINGLE_TAP;
-    else return TD_UNKNOWN; // Any number higher than the maximum state value you return above
-}
+    // else return TD_UNKNOWN; // Any number higher than the maximum state value you return above
+    else return state->count * 2 + state->pressed;
+ }
 
 // Handle the possible states for each tapdance keycode you define:
 
@@ -207,9 +219,24 @@ void altlp_finished(qk_tap_dance_state_t *state, void *user_data) {
             break;
         case TD_DOUBLE_SINGLE_TAP: // Allow nesting of 2 parens `((` within tapping term
             tap_code16(KC_LPRN);
+            tap_code16(KC_H);
+            // send_some_hid();
+            uint8_t data[64] = {
+                0x00, 0x07, 0x00, 0x09, 0x01, 0x09, 0x08, 0x00,
+                0x00, 0x07, 0x00, 0x09, 0x01, 0x09, 0x08, 0x00,
+                0x00, 0x07, 0x00, 0x09, 0x01, 0x09, 0x08, 0x00,
+                0x00, 0x07, 0x00, 0x09, 0x01, 0x09, 0x08, 0x00,
+                0x00, 0x07, 0x00, 0x09, 0x01, 0x09, 0x08, 0x00,
+                0x00, 0x07, 0x00, 0x09, 0x01, 0x09, 0x08, 0x00,
+                0x00, 0x07, 0x00, 0x09, 0x01, 0x09, 0x08, 0x00,
+                0x00, 0x07, 0x00, 0x09, 0x01, 0x09, 0x08, 0x00
+            };
+            uint8_t length  = 64;
+            raw_hid_send(data, length);
             register_code16(KC_LPRN);
             break;
         default:
+            tap_code16(KC_A * 2 - KC_H + td_state);
             break;
     }
 }
@@ -260,7 +287,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	[3] = LAYOUT_ortho_4x12(
         RESET, FORCE_REP, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_BRID, KC_BRIU, KC_NO, KC_NO, KC_NO,
         KC_NO, G(A(S(KC_1))), G(A(S(KC_2))), G(A(S(KC_3))), G(A(S(KC_4))), G(A(S(KC_5))), G(A(S(KC_6))), G(A(S(KC_7))), G(A(S(KC_8))), G(A(S(KC_9))), G(A(S(KC_0))), KC_NO,
-        KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
+        KC_NO, X(BANG), KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
         KC_NO, KC_NO, KC_NO, KC_NO, KC_TRNS, KC_NO, KC_NO, KC_TRNS, KC_MUTE, KC_VOLD, KC_VOLU, KC_NO
         ),
     [4] = LAYOUT_ortho_4x12(
@@ -313,3 +340,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     return true;
 };
 
+void raw_hid_receive(uint8_t *data, uint8_t length) {
+    // Your code goes here. data is the packet received from host.
+    tap_code16(KC_R);
+    tap_code16(KC_E);
+    tap_code16(KC_C);
+    tap_code16(KC_V);
+}
