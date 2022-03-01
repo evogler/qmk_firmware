@@ -26,3 +26,4 @@ COMBO_ENABLE = yes
 UNICODEMAP_ENABLE = yes
 TAP_DANCE_ENABLE=yes
 EXTRAFLAGS += -flto # to save space
+SWAP_HANDS_ENABLE = yes

@@ -91,3 +91,7 @@ user_song_list.h
 compile_commands.json
 .clangd/
 .cache/
+
+node_modules/
+package-lock.json
+lib/lufa
