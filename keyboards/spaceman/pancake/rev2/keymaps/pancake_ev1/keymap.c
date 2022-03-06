@@ -18,24 +18,46 @@ const uint32_t PROGMEM unicode_map[] = {
 };
 
 enum combo_events {
-  EM_EMAIL,
+  TAB_COMBO,
+  ESC_COMBO,
+  DEL_COMBO,
+  RET_COMBO,
+  UP_COMBO,
+  DOWN_COMBO,
+  LEFT_COMBO,
+  RIGHT_COMBO,
   CONSOLE_LOG,
-  OPEN_PAREN,
+  FP_COMMAND,
   SHEL,
   COMBO_LENGTH
 };
 uint16_t COMBO_LEN = COMBO_LENGTH; // remove the COMBO_COUNT define and use this instead!
+// semicolon keycode
 
-const uint16_t PROGMEM email_combo[] = {KC_A, KC_N, COMBO_END};
+const uint16_t PROGMEM tab_combo[] = {KC_Q, KC_W, COMBO_END};
+const uint16_t PROGMEM esc_combo[] = {KC_A, KC_R, COMBO_END};
+const uint16_t PROGMEM del_combo[] = {KC_H, KC_E, KC_I, COMBO_END};
+const uint16_t PROGMEM ret_combo[] = {KC_N, KC_E, KC_I, COMBO_END};
+const uint16_t PROGMEM up_combo[] = {KC_N, KC_U, KC_I, COMBO_END};
+const uint16_t PROGMEM down_combo[] = {KC_N, KC_COMMA, KC_I, COMBO_END};
+const uint16_t PROGMEM left_combo[] = {KC_N, KC_U, KC_Y, COMBO_END};
+const uint16_t PROGMEM right_combo[] = {KC_L, KC_U, KC_I, COMBO_END};
 const uint16_t PROGMEM console_log_combo[] = {KC_L, KC_O, KC_G, COMBO_END};
-const uint16_t PROGMEM open_paren[] = {KC_T, KC_S, COMBO_END};
+const uint16_t PROGMEM fp_command[] = {KC_F, KC_P, COMBO_END};
 const uint16_t PROGMEM shel_combo[] = {KC_S, KC_H, KC_E, COMBO_END};
 
 
 combo_t key_combos[] = {
-  [EM_EMAIL] = COMBO_ACTION(email_combo),
+  [TAB_COMBO] = COMBO_ACTION(tab_combo),
+  [ESC_COMBO] = COMBO_ACTION(esc_combo),
+  [DEL_COMBO] = COMBO_ACTION(del_combo),
+  [RET_COMBO] = COMBO_ACTION(ret_combo),
+  [UP_COMBO] = COMBO_ACTION(up_combo),
+  [DOWN_COMBO] = COMBO_ACTION(down_combo),
+  [LEFT_COMBO] = COMBO_ACTION(left_combo),
+  [RIGHT_COMBO] = COMBO_ACTION(right_combo),
   [CONSOLE_LOG] = COMBO_ACTION(console_log_combo),
-  [OPEN_PAREN] = COMBO_ACTION(open_paren),
+  [FP_COMMAND] = COMBO_ACTION(fp_command),
   [SHEL] = COMBO_ACTION(shel_combo),
 };
 /* COMBO_ACTION(x) is same as COMBO(x, KC_NO) */
@@ -66,19 +88,66 @@ combo_t key_combos[] = {
 
 void process_combo_event(uint16_t combo_index, bool pressed) {
   switch(combo_index) {
-    case EM_EMAIL:
-    //   if (pressed) {
-    //     SEND_STRING("ARST NEIO");
-    //   }
+    case TAB_COMBO:
+      if (pressed) {
+        tap_code16(KC_TAB);
+      }
+      break;
+    case ESC_COMBO:
+      if (pressed) {
+        tap_code16(KC_ESC);
+      }
       break;
     case CONSOLE_LOG:
       if (pressed) {
         SEND_STRING("console.log(");
       }
       break;
-    case OPEN_PAREN:
+    case RET_COMBO:
       if (pressed) {
-          SEND_STRING("(");
+        tap_code16(KC_ENT);
+      }
+      break;
+    case DEL_COMBO:
+        if (pressed) {
+            register_code16(KC_BACKSPACE);
+        } else {
+            unregister_code16(KC_BACKSPACE);
+        }
+        break;
+    case UP_COMBO:
+        if (pressed) {
+            register_code16(KC_UP);
+        } else {
+            unregister_code16(KC_UP);
+        }
+        break;
+    case DOWN_COMBO:
+        if (pressed) {
+            register_code16(KC_DOWN);
+        } else {
+            unregister_code16(KC_DOWN);
+        }
+        break;
+    case LEFT_COMBO:
+        if (pressed) {
+            register_code16(KC_LEFT);
+        } else {
+            unregister_code16(KC_LEFT);
+        }
+        break;
+    case RIGHT_COMBO:
+        if (pressed) {
+            register_code16(KC_RIGHT);
+        } else {
+            unregister_code16(KC_RIGHT);
+        }
+        break;
+    case FP_COMMAND:
+      if (pressed) {
+        register_mods(MOD_BIT(KC_LGUI));
+      } else {
+        unregister_mods(MOD_BIT(KC_LGUI));
       }
       break;
     case SHEL:
@@ -166,7 +235,8 @@ typedef enum {
     TD_UNKNOWN,
     TD_SINGLE_TAP,
     TD_SINGLE_HOLD,
-    TD_DOUBLE_SINGLE_TAP
+    TD_DOUBLE_TAP,
+    TD_DOUBLE_HOLD
 } td_state_t;
 
 // Create a global instance of the tapdance state type
@@ -181,7 +251,6 @@ td_state_t cur_dance(qk_tap_dance_state_t *state);
 void altlp_finished(qk_tap_dance_state_t *state, void *user_data);
 void altlp_reset(qk_tap_dance_state_t *state, void *user_data);
 
-
 // Determine the tapdance state to return
 td_state_t cur_dance(qk_tap_dance_state_t *state) {
     if (state->count == 1) {
@@ -189,7 +258,10 @@ td_state_t cur_dance(qk_tap_dance_state_t *state) {
         else return TD_SINGLE_HOLD;
     }
 
-    if (state->count == 2) return TD_DOUBLE_SINGLE_TAP;
+    if (state->count == 2) {
+        if (state->interrupted || !state->pressed) return TD_DOUBLE_TAP;
+        else return TD_DOUBLE_HOLD;
+    }
     else return TD_UNKNOWN; // Any number higher than the maximum state value you return above
 }
 
@@ -203,12 +275,14 @@ void altlp_finished(qk_tap_dance_state_t *state, void *user_data) {
             register_code16(last_modifier);
             break;
         case TD_SINGLE_HOLD:
-            register_mods(MOD_BIT(KC_LALT)); // For a layer-tap key, use `layer_on(_MY_LAYER)` here
+            register_code16(SH_MON); // For a layer-tap key, use `layer_on(_MY_LAYER)` here
             break;
-        case TD_DOUBLE_SINGLE_TAP: // Allow nesting of 2 parens `((` within tapping term
+        case TD_DOUBLE_TAP: // Allow nesting of 2 parens `((` within tapping term
             tap_code16(KC_LPRN);
             register_code16(KC_LPRN);
             break;
+        case TD_DOUBLE_HOLD:
+            layer_on(3);
         default:
             break;
     }
@@ -221,11 +295,15 @@ void altlp_reset(qk_tap_dance_state_t *state, void *user_data) {
             unregister_mods(last_modifier);;
             break;
         case TD_SINGLE_HOLD:
-            unregister_mods(MOD_BIT(KC_LALT)); // For a layer-tap key, use `layer_off(_MY_LAYER)` here
+            unregister_code16(SH_MON); // For a layer-tap key, use `layer_off(_MY_LAYER)` here
             break;
-        case TD_DOUBLE_SINGLE_TAP:
+        case TD_DOUBLE_TAP:
             unregister_code16(KC_LPRN);
             break;
+        case TD_DOUBLE_HOLD:
+             if (layer_state_is(3)) {
+                layer_off(3);
+            }
         default:
             break;
     }
@@ -246,24 +324,21 @@ const keypos_t PROGMEM hand_swap_config[MATRIX_ROWS][MATRIX_COLS] = {
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	[0] = LAYOUT_ortho_4x12(
-        KC_TAB, KC_Q, KC_W, KC_F, KC_P, KC_B, KC_J, KC_L, KC_U, KC_Y, REP, KC_BSPC,
-        KC_ESC, KC_A, KC_R, KC_S, KC_T, KC_G, KC_M, KC_N, KC_E, KC_I, KC_O, KC_ENT,
+        /*KC_TAB*/ KC_NO, KC_Q, KC_W, KC_F, KC_P, KC_B, KC_J, KC_L, KC_U, KC_Y, KC_SCLN, /* KC_BSPC */ KC_NO,
+        /*KC_ESC*/ KC_NO, KC_A, KC_R, KC_S, KC_T, KC_G, KC_M, KC_N, KC_E, KC_I, KC_O, /* KC_ENT */ KC_NO,
         OSM(MOD_LSFT), KC_Z, KC_X, KC_C, KC_D, KC_V, KC_K, KC_H, KC_COMM, KC_DOT, KC_SLSH, RSFT_T(KC_QUOT),
-        OSM(MOD_LCTL), KC_NO, OSM(MOD_LALT), OSM(MOD_LGUI), OSL(1),
-        // TD(ALT_LP),
-        OP_SH_ON_OFF,
-        KC_SPC, OSL(2), KC_LEFT, KC_DOWN, KC_UP, KC_RGHT
+        OSM(MOD_LCTL), KC_NO, OSM(MOD_LALT), OSM(MOD_LGUI), OSL(1), TD(ALT_LP), KC_SPC, OSL(2), KC_LEFT, KC_DOWN, KC_UP, KC_RGHT
         ),
 	[1] = LAYOUT_ortho_4x12(
         KC_GRV, KC_EXLM, KC_AT, KC_HASH, KC_DLR, KC_PERC, KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_BSPC,
         KC_NO, KC_1, KC_2, KC_3, KC_4, KC_5, KC_6, KC_7, KC_8, KC_9, KC_0, KC_PIPE,
         KC_TRNS, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO,
-        KC_TRNS, KC_TRNS, KC_TRNS, KC_NO, KC_TRNS, OSL(3), KC_TRNS, OSL(2), KC_NO, KC_NO, KC_NO, KC_NO
+        KC_TRNS, KC_TRNS, KC_TRNS, KC_NO, KC_TRNS, OSL(3), KC_TRNS, OSL(2), KC_MS_LEFT, KC_MS_D, KC_MS_U, KC_MS_R
         ),
 	[2] = LAYOUT_ortho_4x12(
         KC_TILDE, KC_GT, KC_RCBR, KC_RBRC, KC_RPRN, KC_NO, KC_NO, KC_MINS, KC_PPLS, KC_NO, KC_NO, KC_DEL,
         KC_TRNS, KC_LT, KC_LCBR, KC_LBRC, KC_LPRN, KC_HOME, KC_END, KC_SCLN, KC_EQL, KC_COLN, KC_UNDS, KC_BSLS,
-        KC_TRNS, KC_NO, KC_NO, KC_NO, KC_NO, KC_PGUP, KC_PGDN, SGUI(KC_LBRC), SGUI(KC_RBRC), KC_NO, KC_NO, KC_NO,
+        KC_TRNS, KC_NO, KC_NO, KC_NO, KC_NO, KC_PGUP, KC_PGDN, SGUI(KC_LBRC), SGUI(KC_RBRC), KC_BTN1, KC_NO, KC_NO,
         KC_NO, KC_NO, KC_NO, KC_NO, OSL(1), KC_TRNS, KC_TRNS, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO
         ),
 	[3] = LAYOUT_ortho_4x12(

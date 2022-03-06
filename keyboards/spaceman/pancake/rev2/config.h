@@ -37,3 +37,4 @@
 #define ONESHOT_TIMEOUT 1500
 #define NO_ACTION_MACRO     // to save space
 #define NO_ACTION_FUNCTION  // to save space
+#define MOUSEKEY_INTERVAL 32
