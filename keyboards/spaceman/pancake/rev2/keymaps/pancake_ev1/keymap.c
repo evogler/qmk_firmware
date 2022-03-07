@@ -33,12 +33,12 @@ enum combo_events {
   RGS_COMBO,
   LGO_COMBO,
   RGO_COMBO,
-  LVG_COMBO,
-  RVG_COMBO,
-  LVOPT_COMBO,
-  RVOPT_COMBO,
-  LVCTRL_COMBO,
-  RVCTRL_COMBO,
+  LGUI_COMBO,
+  RGUI_COMBO,
+  LOPT_COMBO,
+  ROPT_COMBO,
+  LCTRL_COMBO,
+  RCTRL_COMBO,
   SHEL,
   COMBO_LENGTH
 };
@@ -54,18 +54,18 @@ const uint16_t PROGMEM down_combo[] = {KC_N, KC_COMMA, KC_I, COMBO_END};
 const uint16_t PROGMEM left_combo[] = {KC_N, KC_U, KC_Y, COMBO_END};
 const uint16_t PROGMEM right_combo[] = {KC_L, KC_U, KC_I, COMBO_END};
 const uint16_t PROGMEM console_log_combo[] = {KC_L, KC_O, KC_G, COMBO_END};
-const uint16_t PROGMEM lgoc_combo[] = {KC_B, KC_P, COMBO_END};
-const uint16_t PROGMEM rgoc_combo[] = {KC_J, KC_L, COMBO_END};
-const uint16_t PROGMEM lgs_combo[] = {KC_P, KC_W, COMBO_END};
-const uint16_t PROGMEM rgs_combo[] = {KC_L, KC_Y, COMBO_END};
-const uint16_t PROGMEM lgo_combo[] = {KC_B, KC_F, COMBO_END};
-const uint16_t PROGMEM rgo_combo[] = {KC_J, KC_U, COMBO_END};
-const uint16_t PROGMEM lvg_combo[] = {KC_T, KC_P, COMBO_END};
-const uint16_t PROGMEM rvg_combo[] = {KC_N, KC_L, COMBO_END};
-const uint16_t PROGMEM lvopt_combo[] = {KC_S, KC_F, COMBO_END};
-const uint16_t PROGMEM rvopt_combo[] = {KC_E, KC_U, COMBO_END};
-const uint16_t PROGMEM lvctrl_combo[] = {KC_R, KC_W, COMBO_END};
-const uint16_t PROGMEM rvctrl_combo[] = {KC_I, KC_Y, COMBO_END};
+const uint16_t PROGMEM lgoc_combo[] = {KC_P, KC_F, KC_W, COMBO_END};
+const uint16_t PROGMEM rgoc_combo[] = {KC_L, KC_U, KC_Y, COMBO_END};
+const uint16_t PROGMEM lgs_combo[] = {KC_P, KC_Q, COMBO_END};
+const uint16_t PROGMEM rgs_combo[] = {KC_L, KC_LEAD, COMBO_END};
+const uint16_t PROGMEM lgo_combo[] = {KC_P, KC_F, COMBO_END};
+const uint16_t PROGMEM rgo_combo[] = {KC_L, KC_U, COMBO_END};
+const uint16_t PROGMEM lgui_combo[] = {KC_T, KC_P, COMBO_END};
+const uint16_t PROGMEM rgui_combo[] = {KC_N, KC_L, COMBO_END};
+const uint16_t PROGMEM lopt_combo[] = {KC_S, KC_F, COMBO_END};
+const uint16_t PROGMEM ropt_combo[] = {KC_E, KC_U, COMBO_END};
+const uint16_t PROGMEM lctrl_combo[] = {KC_R, KC_W, COMBO_END};
+const uint16_t PROGMEM rctrl_combo[] = {KC_I, KC_Y, COMBO_END};
 
 
 combo_t key_combos[] = {
@@ -84,12 +84,12 @@ combo_t key_combos[] = {
   [RGS_COMBO] = COMBO_ACTION(rgs_combo),
   [LGO_COMBO] = COMBO_ACTION(lgo_combo),
   [RGO_COMBO] = COMBO_ACTION(rgo_combo),
-  [LVG_COMBO] = COMBO_ACTION(lvg_combo),
-  [RVG_COMBO] = COMBO_ACTION(rvg_combo),
-  [LVOPT_COMBO] = COMBO_ACTION(lvopt_combo),
-  [RVOPT_COMBO] = COMBO_ACTION(rvopt_combo),
-  [LVCTRL_COMBO] = COMBO_ACTION(lvctrl_combo),
-  [RVCTRL_COMBO] = COMBO_ACTION(rvctrl_combo),
+  [LGUI_COMBO] = COMBO_ACTION(lgui_combo),
+  [RGUI_COMBO] = COMBO_ACTION(rgui_combo),
+  [LOPT_COMBO] = COMBO_ACTION(lopt_combo),
+  [ROPT_COMBO] = COMBO_ACTION(ropt_combo),
+  [LCTRL_COMBO] = COMBO_ACTION(lctrl_combo),
+  [RCTRL_COMBO] = COMBO_ACTION(rctrl_combo),
 };
 /* COMBO_ACTION(x) is same as COMBO(x, KC_NO) */
 
@@ -174,42 +174,42 @@ void process_combo_event(uint16_t combo_index, bool pressed) {
             unregister_code16(KC_RIGHT);
         }
         break;
-    case LVG_COMBO:
+    case LGUI_COMBO:
       if (pressed) {
         register_mods(MOD_BIT(KC_LGUI));
       } else {
         unregister_mods(MOD_BIT(KC_LGUI));
       }
       break;
-    case RVG_COMBO:
+    case RGUI_COMBO:
         if (pressed) {
             register_mods(MOD_BIT(KC_RGUI));
         } else {
             unregister_mods(MOD_BIT(KC_RGUI));
         }
         break;
-    case LVOPT_COMBO:
+    case LOPT_COMBO:
         if (pressed) {
             register_mods(MOD_BIT(KC_LALT));
         } else {
             unregister_mods(MOD_BIT(KC_LALT));
         }
         break;
-    case RVOPT_COMBO:
+    case ROPT_COMBO:
         if (pressed) {
             register_mods(MOD_BIT(KC_RALT));
         } else {
             unregister_mods(MOD_BIT(KC_RALT));
         }
         break;
-    case LVCTRL_COMBO:
+    case LCTRL_COMBO:
         if (pressed) {
             register_mods(MOD_BIT(KC_LCTL));
         } else {
             unregister_mods(MOD_BIT(KC_LCTL));
         }
         break;
-    case RVCTRL_COMBO:
+    case RCTRL_COMBO:
         if (pressed) {
             register_mods(MOD_BIT(KC_RCTL));
         } else {
@@ -258,14 +258,14 @@ void process_combo_event(uint16_t combo_index, bool pressed) {
             unregister_mods(MOD_BIT(KC_RGUI) | MOD_BIT(KC_RALT));
         }
         break;
-    // case LVG_COMBO:
+    // case LGUI_COMBO:
     //     if (pressed) {
     //         register_mods(MOD_BIT(KC_LGUI));
     //     } else {
     //         unregister_mods(MOD_BIT(KC_LGUI));
     //     }
     //     break;
-    // case RVG_COMBO:
+    // case RGUI_COMBO:
     //     if (pressed) {
     //         register_mods(MOD_BIT(KC_RGUI));
     //     } else {
@@ -449,7 +449,7 @@ const keypos_t PROGMEM hand_swap_config[MATRIX_ROWS][MATRIX_COLS] = {
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	[0] = LAYOUT_ortho_4x12(
-        KC_Q, KC_W, KC_F, KC_P, KC_B,  _, _,  KC_J, KC_L, KC_U, KC_Y, KC_SCLN,
+        KC_Q, KC_W, KC_F, KC_P, KC_B,  _, _,  KC_J, KC_L, KC_U, KC_Y, KC_LEAD,
         KC_A, KC_R, KC_S, KC_T, KC_G,  _, _,  KC_M, KC_N, KC_E, KC_I, KC_O,
         LSFT_T(KC_Z), KC_X, KC_C, KC_D, KC_V,  _, _,  KC_K, KC_H, KC_COMM, KC_DOT, RSFT_T(KC_QUOT),
         _, _, _,  MO(1), TD(ALT_LP),  _, _,  KC_SPC, MO(2), _, _, _
@@ -522,3 +522,29 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     return true;
 };
 
+LEADER_EXTERNS();
+
+void matrix_scan_user(void) {
+  LEADER_DICTIONARY() {
+    leading = false;
+    leader_end();
+
+    SEQ_ONE_KEY(KC_F) {
+      // Anything you can do in a macro.
+      SEND_STRING("QMK is awesome.");
+    }
+    SEQ_TWO_KEYS(KC_D, KC_D) {
+    //   SEND_STRING(SS_LCTL("a") SS_LCTL("c"));
+    SEND_STRING("DD is awesome.");
+    }
+    SEQ_THREE_KEYS(KC_D, KC_D, KC_S) {
+      SEND_STRING("https://start.duckduckgo.com\n");
+    }
+    SEQ_TWO_KEYS(KC_A, KC_S) {
+      register_code(KC_LGUI);
+      register_code(KC_A);
+      unregister_code(KC_A);
+      unregister_code(KC_LGUI);
+    }
+  }
+}
