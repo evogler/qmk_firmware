@@ -39,7 +39,6 @@ enum combo_events {
   ROPT_COMBO,
   LCTRL_COMBO,
   RCTRL_COMBO,
-  SHEL,
   COMBO_LENGTH
 };
 uint16_t COMBO_LEN = COMBO_LENGTH; // remove the COMBO_COUNT define and use this instead!
@@ -90,6 +89,7 @@ combo_t key_combos[] = {
   [ROPT_COMBO] = COMBO_ACTION(ropt_combo),
   [LCTRL_COMBO] = COMBO_ACTION(lctrl_combo),
   [RCTRL_COMBO] = COMBO_ACTION(rctrl_combo),
+
 };
 /* COMBO_ACTION(x) is same as COMBO(x, KC_NO) */
 
@@ -258,29 +258,6 @@ void process_combo_event(uint16_t combo_index, bool pressed) {
             unregister_mods(MOD_BIT(KC_RGUI) | MOD_BIT(KC_RALT));
         }
         break;
-    // case LGUI_COMBO:
-    //     if (pressed) {
-    //         register_mods(MOD_BIT(KC_LGUI));
-    //     } else {
-    //         unregister_mods(MOD_BIT(KC_LGUI));
-    //     }
-    //     break;
-    // case RGUI_COMBO:
-    //     if (pressed) {
-    //         register_mods(MOD_BIT(KC_RGUI));
-    //     } else {
-    //         unregister_mods(MOD_BIT(KC_RGUI));
-    //     }
-    //     break;
-
-    case SHEL:
-    //   if (pressed) {
-    //       SEND_STRING("shelby");
-    //       tap_code(KC_LEFT);
-    //       tap_code(KC_LEFT);
-    //       tap_code(KC_LEFT);
-    //   }
-      break;
   }
 }
 
