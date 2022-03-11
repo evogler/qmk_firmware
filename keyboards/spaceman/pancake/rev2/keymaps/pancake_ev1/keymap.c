@@ -39,11 +39,37 @@ enum combo_events {
   ROPT_COMBO,
   LCTRL_COMBO,
   RCTRL_COMBO,
+  LOS_COMBO,
+  ROS_COMBO,
+  LCS_COMBO,
+  RCS_COMBO,
+  LGC_COMBO,
+  RGC_COMBO,
+  LOC_COMBO,
+  ROC_COMBO,
+  LGOS_COMBO,
+  RGOS_COMBO,
+  LGCS_COMBO,
+  RGCS_COMBO,
+  LOCS_COMBO,
+  ROCS_COMBO,
+  LGOCS_COMBO,
+  RGOCS_COMBO,
+
+  FAUXSWAP_COMBO,
   COMBO_LENGTH
 };
 uint16_t COMBO_LEN = COMBO_LENGTH; // remove the COMBO_COUNT define and use this instead!
 // semicolon keycode
 
+#define R1 KC_L
+#define R2 KC_U
+#define R3 KC_Y
+#define R4 KC_LEAD
+#define L1 KC_P
+#define L2 KC_F
+#define L3 KC_W
+#define L4 KC_Q
 const uint16_t PROGMEM tab_combo[] = {KC_R, KC_S, KC_T, COMBO_END};
 const uint16_t PROGMEM esc_combo[] = {KC_A, KC_R, COMBO_END};
 const uint16_t PROGMEM del_combo[] = {KC_H, KC_E, KC_I, COMBO_END};
@@ -53,19 +79,35 @@ const uint16_t PROGMEM down_combo[] = {KC_N, KC_COMMA, KC_I, COMBO_END};
 const uint16_t PROGMEM left_combo[] = {KC_N, KC_U, KC_Y, COMBO_END};
 const uint16_t PROGMEM right_combo[] = {KC_L, KC_U, KC_I, COMBO_END};
 const uint16_t PROGMEM console_log_combo[] = {KC_L, KC_O, KC_G, COMBO_END};
-const uint16_t PROGMEM lgoc_combo[] = {KC_P, KC_F, KC_W, COMBO_END};
-const uint16_t PROGMEM rgoc_combo[] = {KC_L, KC_U, KC_Y, COMBO_END};
-const uint16_t PROGMEM lgs_combo[] = {KC_P, KC_Q, COMBO_END};
-const uint16_t PROGMEM rgs_combo[] = {KC_L, KC_LEAD, COMBO_END};
-const uint16_t PROGMEM lgo_combo[] = {KC_P, KC_F, COMBO_END};
-const uint16_t PROGMEM rgo_combo[] = {KC_L, KC_U, COMBO_END};
-const uint16_t PROGMEM lgui_combo[] = {KC_T, KC_P, COMBO_END};
-const uint16_t PROGMEM rgui_combo[] = {KC_N, KC_L, COMBO_END};
-const uint16_t PROGMEM lopt_combo[] = {KC_S, KC_F, COMBO_END};
-const uint16_t PROGMEM ropt_combo[] = {KC_E, KC_U, COMBO_END};
-const uint16_t PROGMEM lctrl_combo[] = {KC_R, KC_W, COMBO_END};
-const uint16_t PROGMEM rctrl_combo[] = {KC_I, KC_Y, COMBO_END};
-
+const uint16_t PROGMEM lgoc_combo[] = {L1, L2, L3, COMBO_END};
+const uint16_t PROGMEM rgoc_combo[] = {R1, R2, R3, COMBO_END};
+const uint16_t PROGMEM lgs_combo[] = {L1, L4, COMBO_END};
+const uint16_t PROGMEM rgs_combo[] = {R1, R4, COMBO_END};
+const uint16_t PROGMEM lgo_combo[] = {L1, L2, COMBO_END};
+const uint16_t PROGMEM rgo_combo[] = {R1, R2, COMBO_END};
+const uint16_t PROGMEM lgui_combo[] = {KC_T, L1, COMBO_END};
+const uint16_t PROGMEM rgui_combo[] = {KC_N, R1, COMBO_END};
+const uint16_t PROGMEM lopt_combo[] = {KC_S, L2, COMBO_END};
+const uint16_t PROGMEM ropt_combo[] = {KC_E, R2, COMBO_END};
+const uint16_t PROGMEM lctrl_combo[] = {KC_R, L3, COMBO_END};
+const uint16_t PROGMEM rctrl_combo[] = {KC_I, R3, COMBO_END};
+const uint16_t PROGMEM los_combo[] = {L2, L4, COMBO_END};
+const uint16_t PROGMEM ros_combo[] = {R2, R4, COMBO_END};
+const uint16_t PROGMEM lcs_combo[] = {L3, L4, COMBO_END};
+const uint16_t PROGMEM rcs_combo[] = {R3, R4, COMBO_END};
+const uint16_t PROGMEM lgc_combo[] = {L1, L3, COMBO_END};
+const uint16_t PROGMEM rgc_combo[] = {R1, R3, COMBO_END};
+const uint16_t PROGMEM loc_combo[] = {L2, L3, COMBO_END};
+const uint16_t PROGMEM roc_combo[] = {R2, R3, COMBO_END};
+const uint16_t PROGMEM lgos_combo[] = {L1, L2, L4, COMBO_END};
+const uint16_t PROGMEM rgos_combo[] = {R1, R2, R4, COMBO_END};
+const uint16_t PROGMEM lgcs_combo[] = {L1, L3, L4, COMBO_END};
+const uint16_t PROGMEM rgcs_combo[] = {R1, R3, R4, COMBO_END};
+const uint16_t PROGMEM locs_combo[] = {L2, L3, L4, COMBO_END};
+const uint16_t PROGMEM rocs_combo[] = {R2, R3, R4, COMBO_END};
+const uint16_t PROGMEM lgocs_combo[] = {L1, L2, L3, L4, COMBO_END};
+const uint16_t PROGMEM rgocs_combo[] = {R1, R2, R3, R4, COMBO_END};
+const uint16_t PROGMEM fauxswap_combo[] = {KC_SPC, MO(2), COMBO_END};
 
 combo_t key_combos[] = {
   [TAB_COMBO] = COMBO_ACTION(tab_combo),
@@ -89,6 +131,23 @@ combo_t key_combos[] = {
   [ROPT_COMBO] = COMBO_ACTION(ropt_combo),
   [LCTRL_COMBO] = COMBO_ACTION(lctrl_combo),
   [RCTRL_COMBO] = COMBO_ACTION(rctrl_combo),
+  [LOS_COMBO] = COMBO_ACTION(los_combo),
+  [ROS_COMBO] = COMBO_ACTION(ros_combo),
+  [LCS_COMBO] = COMBO_ACTION(lcs_combo),
+  [RCS_COMBO] = COMBO_ACTION(rcs_combo),
+  [LGC_COMBO] = COMBO_ACTION(lgc_combo),
+  [RGC_COMBO] = COMBO_ACTION(rgc_combo),
+  [LOC_COMBO] = COMBO_ACTION(loc_combo),
+  [ROC_COMBO] = COMBO_ACTION(roc_combo),
+  [LGOS_COMBO] = COMBO_ACTION(lgos_combo),
+  [RGOS_COMBO] = COMBO_ACTION(rgos_combo),
+  [LGCS_COMBO] = COMBO_ACTION(lgcs_combo),
+  [RGCS_COMBO] = COMBO_ACTION(rgcs_combo),
+  [LOCS_COMBO] = COMBO_ACTION(locs_combo),
+  [ROCS_COMBO] = COMBO_ACTION(rocs_combo),
+  [LGOCS_COMBO] = COMBO_ACTION(lgocs_combo),
+  [RGOCS_COMBO] = COMBO_ACTION(rgocs_combo),
+  [FAUXSWAP_COMBO] = COMBO_ACTION(fauxswap_combo)
 
 };
 /* COMBO_ACTION(x) is same as COMBO(x, KC_NO) */
@@ -256,6 +315,127 @@ void process_combo_event(uint16_t combo_index, bool pressed) {
             register_mods(MOD_BIT(KC_RGUI) | MOD_BIT(KC_RALT));
         } else {
             unregister_mods(MOD_BIT(KC_RGUI) | MOD_BIT(KC_RALT));
+        }
+        break;
+    case LOS_COMBO:
+        if (pressed) {
+            register_mods(MOD_BIT(KC_LALT) | MOD_BIT(KC_LSFT));
+
+        } else {
+            unregister_mods(MOD_BIT(KC_LALT) | MOD_BIT(KC_LSFT));
+        }
+        break;
+    case ROS_COMBO:
+        if (pressed) {
+            register_mods(MOD_BIT(KC_RALT) | MOD_BIT(KC_RSFT));
+        } else {
+            unregister_mods(MOD_BIT(KC_RALT) | MOD_BIT(KC_RSFT));
+        }
+        break;
+    case LCS_COMBO:
+        if (pressed) {
+            register_mods(MOD_BIT(KC_LCTL) | MOD_BIT(KC_LSFT));
+        } else {
+            unregister_mods(MOD_BIT(KC_LCTL) | MOD_BIT(KC_LSFT));
+        }
+        break;
+    case RCS_COMBO:
+        if (pressed) {
+            register_mods(MOD_BIT(KC_RCTL) | MOD_BIT(KC_RSFT));
+        } else {
+            unregister_mods(MOD_BIT(KC_RCTL) | MOD_BIT(KC_RSFT));
+        }
+        break;
+    case FAUXSWAP_COMBO:
+        if (pressed) {
+            // SEND_STRING("Fauxswap!");
+            layer_on(4);
+        } else {
+            layer_off(4);
+        }
+        break;
+    case LGC_COMBO:
+        if (pressed) {
+            register_mods(MOD_BIT(KC_LGUI) | MOD_BIT(KC_LCTL));
+        } else {
+            unregister_mods(MOD_BIT(KC_LGUI) | MOD_BIT(KC_LCTL));
+        }
+        break;
+    case RGC_COMBO:
+        if (pressed) {
+            register_mods(MOD_BIT(KC_RGUI) | MOD_BIT(KC_RCTL));
+        } else {
+            unregister_mods(MOD_BIT(KC_RGUI) | MOD_BIT(KC_RCTL));
+        }
+        break;
+    case LOC_COMBO:
+        if (pressed) {
+            register_mods(MOD_BIT(KC_LCTL) | MOD_BIT(KC_LALT));
+        } else {
+            unregister_mods(MOD_BIT(KC_LCTL) | MOD_BIT(KC_LALT));
+        }
+        break;
+    case ROC_COMBO:
+        if (pressed) {
+            register_mods(MOD_BIT(KC_RCTL) | MOD_BIT(KC_RALT));
+        } else {
+            unregister_mods(MOD_BIT(KC_RCTL) | MOD_BIT(KC_RALT));
+        }
+        break;
+    case LGOS_COMBO:
+        if (pressed) {
+            register_mods(MOD_BIT(KC_LGUI) | MOD_BIT(KC_LALT) | MOD_BIT(KC_LSFT));
+        } else {
+            unregister_mods(MOD_BIT(KC_LGUI) | MOD_BIT(KC_LALT) | MOD_BIT(KC_LSFT));
+        }
+        break;
+    case RGOS_COMBO:
+        if (pressed) {
+            register_mods(MOD_BIT(KC_RGUI) | MOD_BIT(KC_RALT) | MOD_BIT(KC_RSFT));
+        } else {
+            unregister_mods(MOD_BIT(KC_RGUI) | MOD_BIT(KC_RALT) | MOD_BIT(KC_RSFT));
+        }
+        break;
+    case LGCS_COMBO:
+        if (pressed) {
+            register_mods(MOD_BIT(KC_LGUI) | MOD_BIT(KC_LCTL) | MOD_BIT(KC_LSFT));
+        } else {
+            unregister_mods(MOD_BIT(KC_LGUI) | MOD_BIT(KC_LCTL) | MOD_BIT(KC_LSFT));
+        }
+        break;
+    case RGCS_COMBO:
+        if (pressed) {
+            register_mods(MOD_BIT(KC_RGUI) | MOD_BIT(KC_RCTL) | MOD_BIT(KC_RSFT));
+        } else {
+            unregister_mods(MOD_BIT(KC_RGUI) | MOD_BIT(KC_RCTL) | MOD_BIT(KC_RSFT));
+        }
+        break;
+    case LOCS_COMBO:
+        if (pressed) {
+            register_mods(MOD_BIT(KC_LCTL) | MOD_BIT(KC_LALT) | MOD_BIT(KC_LSFT));
+        } else {
+            unregister_mods(MOD_BIT(KC_LCTL) | MOD_BIT(KC_LALT) | MOD_BIT(KC_LSFT));
+        }
+        break;
+    case ROCS_COMBO:
+        if (pressed) {
+            register_mods(MOD_BIT(KC_RCTL) | MOD_BIT(KC_RALT) | MOD_BIT(KC_RSFT));
+        } else {
+            unregister_mods(MOD_BIT(KC_RCTL) | MOD_BIT(KC_RALT) | MOD_BIT(KC_RSFT));
+        }
+        break;
+    case LGOCS_COMBO:
+        if (pressed) {
+            register_mods(MOD_BIT(KC_LGUI) | MOD_BIT(KC_LCTL) | MOD_BIT(KC_LALT) | MOD_BIT(KC_LSFT));
+        } else {
+            unregister_mods(MOD_BIT(KC_LGUI) | MOD_BIT(KC_LCTL) | MOD_BIT(KC_LALT) | MOD_BIT(KC_LSFT));
+        }
+        break;
+    case RGOCS_COMBO:
+        if (pressed) {
+            register_mods(MOD_BIT(KC_RGUI) | MOD_BIT(KC_RCTL) | MOD_BIT(KC_RALT) | MOD_BIT(KC_RSFT));
+        } else {
+            unregister_mods(MOD_BIT(KC_RGUI) | MOD_BIT(KC_RCTL) | MOD_BIT(KC_RALT) | MOD_BIT(KC_RSFT));
         }
         break;
   }
@@ -450,10 +630,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _, _, _, KC_TRNS, _,    _, _,    _, KC_TRNS, _, _, _
         ),
     [4] = LAYOUT_ortho_4x12(
-        X(BANG), X(BANG), X(BANG), X(BANG), X(BANG), X(BANG), X(BANG), X(BANG), X(BANG), X(BANG), X(BANG), X(BANG),
-        X(BANG), X(BANG), X(BANG), X(BANG), X(BANG), X(BANG), X(BANG), X(BANG), X(BANG), X(BANG), X(BANG), X(BANG),
-        X(BANG), X(BANG), X(BANG), X(BANG), X(BANG), X(BANG), X(BANG), X(BANG), X(BANG), X(BANG), X(BANG), X(BANG),
-        X(BANG), X(BANG), X(BANG), X(BANG), X(BANG), X(BANG), X(BANG), X(BANG), X(BANG), X(BANG), X(BANG), X(BANG)
+        X(BANG), X(BANG), X(BANG), X(BANG), X(BANG), _, _, KC_B, KC_P, KC_F, KC_W, KC_Q,
+        X(BANG), X(BANG), X(BANG), X(BANG), X(BANG), _, _, KC_G, KC_T, KC_S, KC_R, KC_A,
+        X(BANG), X(BANG), X(BANG), X(BANG), X(BANG), _, _, KC_V, KC_D, KC_C, KC_X, KC_Z,
+        X(BANG), X(BANG), X(BANG), X(BANG), X(BANG), _, _, KC_TRNS, KC_TRNS, _, _, _
     )
 };
 
