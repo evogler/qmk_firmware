@@ -55,14 +55,14 @@ enum combo_events {
   ROCS_COMBO,
   LGOCS_COMBO,
   RGOCS_COMBO,
-
   OPTLEFT_COMBO,
   OPTRIGHT_COMBO,
   GUILEFT_COMBO,
   GUIRIGHT_COMBO,
   OPTBKSP_COMBO,
   GUIBKSP_COMBO,
-
+  TABLEFT_COMBO,
+  TABRIGHT_COMBO,
   FAUXSWAP_COMBO,
   COMBO_LENGTH
 };
@@ -114,14 +114,14 @@ const uint16_t PROGMEM locs_combo[] = {L2, L3, L4, COMBO_END};
 const uint16_t PROGMEM rocs_combo[] = {R2, R3, R4, COMBO_END};
 const uint16_t PROGMEM lgocs_combo[] = {L1, L2, L3, L4, COMBO_END};
 const uint16_t PROGMEM rgocs_combo[] = {R1, R2, R3, R4, COMBO_END};
-
 const uint16_t PROGMEM optleft_combo[] = {KC_E, KC_Y, KC_LEAD, COMBO_END};
 const uint16_t PROGMEM optright_combo[] = {KC_U, KC_Y, KC_O, COMBO_END};
 const uint16_t PROGMEM guileft_combo[] = {KC_M, KC_L, KC_U, COMBO_END};
 const uint16_t PROGMEM guiright_combo[] = {KC_J, KC_L, KC_E, COMBO_END};
+const uint16_t PROGMEM tableft_combo[] = {KC_N, KC_E, KC_O, COMBO_END};
+const uint16_t PROGMEM tabright_combo[] = {KC_N, KC_I, KC_O, COMBO_END};
 const uint16_t PROGMEM optbksp_combo[] = {KC_COMMA, KC_I, KC_O,COMBO_END};
 const uint16_t PROGMEM guibksp_combo[] = {KC_K, KC_N, KC_E, COMBO_END};
-
 const uint16_t PROGMEM fauxswap_combo[] = {KC_SPC, MO(2), COMBO_END};
 
 combo_t key_combos[] = {
@@ -168,6 +168,8 @@ combo_t key_combos[] = {
   [GUIRIGHT_COMBO] = COMBO_ACTION(guiright_combo),
   [OPTBKSP_COMBO] = COMBO_ACTION(optbksp_combo),
   [GUIBKSP_COMBO] = COMBO_ACTION(guibksp_combo),
+  [TABLEFT_COMBO] = COMBO_ACTION(tableft_combo),
+  [TABRIGHT_COMBO] = COMBO_ACTION(tabright_combo),
   [FAUXSWAP_COMBO] = COMBO_ACTION(fauxswap_combo)
 
 };
@@ -513,7 +515,25 @@ void process_combo_event(uint16_t combo_index, bool pressed) {
             unregister_code16(KC_BSPC);
         }
         break;
-  }
+    case TABLEFT_COMBO:
+        if (pressed) {
+            register_mods(MOD_BIT(KC_RGUI) | MOD_BIT(KC_RSFT));
+            register_code16(KC_LBRC);
+        } else {
+            unregister_mods(MOD_BIT(KC_RGUI) | MOD_BIT(KC_RSFT));
+            unregister_code16(KC_LBRC);
+        }
+        break;
+    case TABRIGHT_COMBO:
+        if (pressed) {
+            register_mods(MOD_BIT(KC_RGUI) | MOD_BIT(KC_RSFT));
+            register_code16(KC_RBRC);
+        } else {
+            unregister_mods(MOD_BIT(KC_RGUI) | MOD_BIT(KC_RSFT));
+            unregister_code16(KC_RBRC);
+        }
+        break;
+    }
 }
 
 // For key repeater:
