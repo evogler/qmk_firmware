@@ -64,6 +64,7 @@ enum combo_events {
   TABLEFT_COMBO,
   TABRIGHT_COMBO,
   SWAPHANDS_COMBO,
+  CUSTOM_COMMA,
   COMBO_LENGTH
 };
 uint16_t COMBO_LEN = COMBO_LENGTH; // remove the COMBO_COUNT define and use this instead!
@@ -123,6 +124,7 @@ const uint16_t PROGMEM tabright_combo[] = {KC_N, KC_I, KC_O, COMBO_END};
 const uint16_t PROGMEM optbksp_combo[] = {KC_COMMA, KC_I, KC_O,COMBO_END};
 const uint16_t PROGMEM guibksp_combo[] = {KC_K, KC_N, KC_E, COMBO_END};
 const uint16_t PROGMEM swaphands_combo[] = {KC_SPC, MO(2), COMBO_END};
+const uint16_t PROGMEM custom_comma[] = {KC_COMMA, COMBO_END};
 
 combo_t key_combos[] = {
   [TAB_COMBO] = COMBO_ACTION(tab_combo),
@@ -170,7 +172,8 @@ combo_t key_combos[] = {
   [GUIBKSP_COMBO] = COMBO_ACTION(guibksp_combo),
   [TABLEFT_COMBO] = COMBO_ACTION(tableft_combo),
   [TABRIGHT_COMBO] = COMBO_ACTION(tabright_combo),
-  [SWAPHANDS_COMBO] = COMBO_ACTION(swaphands_combo)
+  [SWAPHANDS_COMBO] = COMBO_ACTION(swaphands_combo),
+  [CUSTOM_COMMA] = COMBO_ACTION(custom_comma)
 
 };
 /* COMBO_ACTION(x) is same as COMBO(x, KC_NO) */
@@ -198,6 +201,8 @@ combo_t key_combos[] = {
 //     tap_code16(num_to_code((num >> 0) & 0x0F));
 //     tap_code16(KC_SPC);
 // }
+
+uint8_t custom_comma_shifted = false;
 
 void process_combo_event(uint16_t combo_index, bool pressed) {
   switch(combo_index) {
@@ -530,6 +535,23 @@ void process_combo_event(uint16_t combo_index, bool pressed) {
         } else {
             unregister_mods(MOD_BIT(KC_RGUI) | MOD_BIT(KC_RSFT));
             unregister_code16(KC_RBRC);
+        }
+        break;
+    case CUSTOM_COMMA:
+        if (pressed) {
+            if (get_mods() & MOD_MASK_SHIFT) {
+                register_code(KC_E);
+                custom_comma_shifted = true;
+            } else {
+                register_code(KC_COMM);
+                custom_comma_shifted = false;
+            }
+        } else {
+            if (custom_comma_shifted) {
+                unregister_code(KC_E);
+            } else {
+                unregister_code(KC_COMM);
+            }
         }
         break;
     }
