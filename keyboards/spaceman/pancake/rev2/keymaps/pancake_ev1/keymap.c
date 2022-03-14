@@ -63,7 +63,7 @@ enum combo_events {
   GUIBKSP_COMBO,
   TABLEFT_COMBO,
   TABRIGHT_COMBO,
-  FAUXSWAP_COMBO,
+  SWAPHANDS_COMBO,
   COMBO_LENGTH
 };
 uint16_t COMBO_LEN = COMBO_LENGTH; // remove the COMBO_COUNT define and use this instead!
@@ -122,7 +122,7 @@ const uint16_t PROGMEM tableft_combo[] = {KC_N, KC_E, KC_O, COMBO_END};
 const uint16_t PROGMEM tabright_combo[] = {KC_N, KC_I, KC_O, COMBO_END};
 const uint16_t PROGMEM optbksp_combo[] = {KC_COMMA, KC_I, KC_O,COMBO_END};
 const uint16_t PROGMEM guibksp_combo[] = {KC_K, KC_N, KC_E, COMBO_END};
-const uint16_t PROGMEM fauxswap_combo[] = {KC_SPC, MO(2), COMBO_END};
+const uint16_t PROGMEM swaphands_combo[] = {KC_SPC, MO(2), COMBO_END};
 
 combo_t key_combos[] = {
   [TAB_COMBO] = COMBO_ACTION(tab_combo),
@@ -170,7 +170,7 @@ combo_t key_combos[] = {
   [GUIBKSP_COMBO] = COMBO_ACTION(guibksp_combo),
   [TABLEFT_COMBO] = COMBO_ACTION(tableft_combo),
   [TABRIGHT_COMBO] = COMBO_ACTION(tabright_combo),
-  [FAUXSWAP_COMBO] = COMBO_ACTION(fauxswap_combo)
+  [SWAPHANDS_COMBO] = COMBO_ACTION(swaphands_combo)
 
 };
 /* COMBO_ACTION(x) is same as COMBO(x, KC_NO) */
@@ -369,12 +369,11 @@ void process_combo_event(uint16_t combo_index, bool pressed) {
             unregister_mods(MOD_BIT(KC_RCTL) | MOD_BIT(KC_RSFT));
         }
         break;
-    case FAUXSWAP_COMBO:
+    case SWAPHANDS_COMBO:
         if (pressed) {
-            // SEND_STRING("Fauxswap!");
-            layer_on(4);
+            swap_hands = true;
         } else {
-            layer_off(4);
+            swap_hands = false;
         }
         break;
     case LGC_COMBO:
@@ -650,7 +649,7 @@ void altlp_finished(qk_tap_dance_state_t *state, void *user_data) {
             register_code16(last_modifier);
             break;
         case TD_SINGLE_HOLD:
-            register_code16(SH_MON); // For a layer-tap key, use `layer_on(_MY_LAYER)` here
+            swap_hands = true;
             break;
         case TD_DOUBLE_TAP: // Allow nesting of 2 parens `((` within tapping term
             tap_code16(KC_LPRN);
@@ -670,7 +669,7 @@ void altlp_reset(qk_tap_dance_state_t *state, void *user_data) {
             unregister_mods(last_modifier);;
             break;
         case TD_SINGLE_HOLD:
-            unregister_code16(SH_MON); // For a layer-tap key, use `layer_off(_MY_LAYER)` here
+            swap_hands = false;
             break;
         case TD_DOUBLE_TAP:
             unregister_code16(KC_LPRN);
@@ -789,7 +788,7 @@ void matrix_scan_user(void) {
     //   SEND_STRING(SS_LCTL("a") SS_LCTL("c"));
     SEND_STRING("DD is awesome.");
     }
-    SEQ_THREE_KEYS(KC_D, KC_D, KC_S) {
+    SEQ_THREE_KEYS(KC_D, KC_U, KC_C) {
       SEND_STRING("https://start.duckduckgo.com\n");
     }
     SEQ_TWO_KEYS(KC_A, KC_S) {
