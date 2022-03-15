@@ -703,7 +703,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_Q, KC_W, KC_F, KC_P, KC_B,  _, _,  KC_J, KC_L, KC_U, KC_Y, KC_LEAD,
         KC_A, KC_R, KC_S, KC_T, KC_G,  _, _,  KC_M, KC_N, KC_E, KC_I, KC_O,
         LSFT_T(KC_Z), KC_X, KC_C, KC_D, KC_V,  _, _,  KC_K, KC_H, KC_COMM, KC_DOT, RSFT_T(KC_QUOT),
-        _, _, _,  MO(1), TD(ALT_LP),    _, _,   KC_SPC, MO(4), _, _, _
+        _, _, _,  MO(1), TD(ALT_LP),    _, _,   KC_SPC, MO(2), _, _, _
         ),
 	[1] = LAYOUT_ortho_4x12(
         KC_LT, KC_LCBR, KC_LBRC, KC_LPRN, KC_SLSH,  _, _,  KC_GRV, KC_SCLN, KC_EQL, KC_MINS, KC_BSLS,
@@ -711,24 +711,18 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_LSFT, _, _, _, _,   _, _,     _, _, _, _, KC_RSFT,
         _, _, _, KC_TRNS, _,    _, _,   KC_SPC, MO(3), _, _, _
         ),
-	[2] = LAYOUT_ortho_4x12(
-        KC_GT, KC_RCBR, KC_RBRC, KC_RPRN, _,    _, _,    KC_GRV, KC_MINS, KC_PPLS, KC_TILDE, _,
-        KC_LT, KC_LCBR, KC_LBRC, KC_LPRN, _,    _, _,    KC_SCLN, KC_ENT, KC_EQL, KC_COLN, KC_UNDS,
-        LSFT_T(KC_QUES), KC_BSLS, KC_PIPE, KC_SLSH, _,  _, _,    KC_BSPC, KC_LEFT, KC_DOWN, KC_UP, KC_RGHT,
-        _, _, _, MO(3), _,                      _, _,    _, KC_TRNS, _, _, _
+    [2] = LAYOUT_ortho_4x12(
+        _, G(KC_W), _, _, _,     _, _,                   KC_PGUP, KC_BSPC, KC_TAB, KC_HOME, KC_END,
+        G(KC_A), KC_LSHIFT, KC_LALT, KC_LGUI, _,  _, _,  KC_PGDN, KC_LEFT, KC_DOWN, KC_UP, KC_RIGHT,
+        G(KC_X), G(KC_Z), G(KC_C), G(KC_D), G(KC_V),  _, _,    KC_ENT, A(KC_LEFT), A(KC_BSPC), _, A(KC_RIGHT),
+        _, _, _, MO(3), KC_ENT,      _, _,    KC_TRNS, KC_TRNS, _, _, _
         ),
 	[3] = LAYOUT_ortho_4x12(
-        RESET, FORCE_REP, _, _, _,    _, _,   KC_BRID, KC_BRIU, KC_VOLD, KC_VOLU, KC_MUTE,
+        RESET, FORCE_REP, KC_RBRC, _, _,    _, _,   KC_BRID, KC_BRIU, KC_VOLD, KC_VOLU, KC_MUTE,
         G(A(S(KC_1))), G(A(S(KC_2))), G(A(S(KC_3))), G(A(S(KC_4))), G(A(S(KC_5))),   _, _,  G(A(S(KC_6))), G(A(S(KC_7))), G(A(S(KC_8))), G(A(S(KC_9))), G(A(S(KC_0))),
         _, _, _, _, _,          _, _,     _, _, _, _, _,
         _, _, _, KC_TRNS, _,    _, _,    _, KC_TRNS, _, _, _
-        ),
-    [4] = LAYOUT_ortho_4x12(
-        X(BANG), G(KC_W), X(BANG), X(BANG), X(BANG), _, _, KC_PGUP, KC_TAB, KC_BSPC, KC_HOME, KC_END,
-        G(KC_A), KC_LSHIFT, KC_LALT, KC_LGUI, X(BANG), _, _, KC_PGDN, KC_LEFT, KC_DOWN, KC_UP, KC_RIGHT,
-        G(KC_Z), G(KC_X), G(KC_C), G(KC_D), G(KC_V), _, _, KC_ENT, A(KC_LEFT), A(KC_BSPC), _, A(KC_RIGHT),
-        X(BANG), X(BANG), X(BANG), X(BANG), X(BANG), _, _, KC_TRNS, KC_TRNS, _, _, _
-    )
+        )
 };
 
 
@@ -783,12 +777,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     override = true;
                 }
                 break;
-            case KC_LBRC:
-                if (get_mods() & (MOD_BIT(KC_LSHIFT) | MOD_BIT(KC_RSHIFT))) {
-                    tap_code16(KC_RBRC);
-                    override = true;
-                }
-                break;
+            // case KC_LCBR:
+            //     if (get_mods() & (MOD_BIT(KC_LSHIFT) | MOD_BIT(KC_RSHIFT))) {
+            //         tap_code16(KC_RBRC);
+            //         override = true;
+            //     }
+            //     break;
             case KC_LCBR:
                 if (get_mods() & (MOD_BIT(KC_LSHIFT) | MOD_BIT(KC_RSHIFT))) {
                     tap_code16(KC_RCBR);
