@@ -39,3 +39,4 @@
 #define NO_ACTION_FUNCTION  // to save space
 #define MOUSEKEY_INTERVAL 32
 #define LEADER_TIMEOUT 300
+#define LEADER_NO_TIMEOUT

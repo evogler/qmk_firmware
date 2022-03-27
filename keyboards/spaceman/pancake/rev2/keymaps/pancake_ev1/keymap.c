@@ -6,6 +6,7 @@ enum custom_keycodes {
     REP = SAFE_RANGE,
     FORCE_REP,
     CLEAR_KEYB,
+    MY_BRACE
 };
 
 // note: if this array gets larger than 3, there's a variable you have to set
@@ -703,19 +704,19 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_Q, KC_W, KC_F, KC_P, KC_B,  _, _,  KC_J, KC_L, KC_U, KC_Y, KC_LEAD,
         KC_A, KC_R, KC_S, KC_T, KC_G,  _, _,  KC_M, KC_N, KC_E, KC_I, KC_O,
         LSFT_T(KC_Z), KC_X, KC_C, KC_D, KC_V,  _, _,  KC_K, KC_H, KC_COMM, KC_DOT, RSFT_T(KC_QUOT),
-        _, _, _,  MO(1), TD(ALT_LP),    _, _,   KC_SPC, MO(2), _, _, _
+        _, _, _,  MO(1), KC_LGUI,      _, _,   KC_SPC, MO(2), _, _, _
         ),
 	[1] = LAYOUT_ortho_4x12(
-        KC_LT, KC_LCBR, KC_LBRC, KC_LPRN, KC_SLSH,  _, _,  KC_GRV, KC_SCLN, KC_EQL, KC_MINS, KC_BSLS,
+        KC_LT, KC_LCBR, MY_BRACE, KC_LPRN, KC_SLSH,  _, _,  KC_GRV, KC_SCLN, KC_EQL, KC_MINS, KC_BSLS,
         KC_1, KC_2, KC_3, KC_4, KC_5,              _, _,  KC_6, KC_7, KC_8, KC_9, KC_0,
         KC_LSFT, _, _, _, _,   _, _,     _, _, _, _, KC_RSFT,
-        _, _, _, KC_TRNS, _,    _, _,   KC_SPC, MO(3), _, _, _
+        _, _, _, KC_TRNS, KC_TRNS,    _, _,   KC_SPC, KC_TRNS, _, _, _
         ),
     [2] = LAYOUT_ortho_4x12(
-        _, G(KC_W), _, _, _,     _, _,                   KC_PGUP, KC_BSPC, KC_TAB, KC_HOME, KC_END,
+        KC_ESC, G(KC_W), _, _, _,     _, _,                   KC_PGUP, KC_BSPC, KC_TAB, KC_HOME, KC_END,
         G(KC_A), KC_LSHIFT, KC_LALT, KC_LGUI, _,  _, _,  KC_PGDN, KC_LEFT, KC_DOWN, KC_UP, KC_RIGHT,
-        G(KC_X), G(KC_Z), G(KC_C), G(KC_D), G(KC_V),  _, _,    KC_ENT, A(KC_LEFT), A(KC_BSPC), _, A(KC_RIGHT),
-        _, _, _, MO(3), KC_ENT,      _, _,    KC_TRNS, KC_TRNS, _, _, _
+        G(KC_Z), G(KC_X), G(KC_C), G(KC_D), G(KC_V),  _, _,    KC_ENT, A(KC_LEFT), A(KC_BSPC), _, A(KC_RIGHT),
+        _, _, _, KC_TRNS, KC_ENT,    _, _,    KC_TRNS, KC_TRNS, _, _, _
         ),
 	[3] = LAYOUT_ortho_4x12(
         RESET, FORCE_REP, KC_RBRC, _, _,    _, _,   KC_BRID, KC_BRIU, KC_VOLD, KC_VOLU, KC_MUTE,
@@ -777,16 +778,20 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     override = true;
                 }
                 break;
-            // case KC_LCBR:
-            //     if (get_mods() & (MOD_BIT(KC_LSHIFT) | MOD_BIT(KC_RSHIFT))) {
-            //         tap_code16(KC_RBRC);
-            //         override = true;
-            //     }
-            //     break;
             case KC_LCBR:
                 if (get_mods() & (MOD_BIT(KC_LSHIFT) | MOD_BIT(KC_RSHIFT))) {
                     tap_code16(KC_RCBR);
                     override = true;
+                }
+                break;
+            case MY_BRACE:
+                if (get_mods() & (MOD_BIT(KC_LSHIFT) | MOD_BIT(KC_RSHIFT))) {
+                    uint16_t temp_mods = get_mods();
+                    clear_mods();
+                    tap_code16(KC_RBRC);
+                    set_mods(temp_mods);
+                } else {
+                    tap_code16(KC_LBRC);
                 }
                 break;
         }
@@ -804,6 +809,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 };
 
 LEADER_EXTERNS();
+
+void go_to_screen(uint8_t screen) {
+    register_mods(MOD_BIT(KC_LSFT) | MOD_BIT(KC_LALT) | MOD_BIT(KC_LGUI));
+    tap_code16(KC_1 + screen - 1);
+    unregister_mods(MOD_BIT(KC_LSFT) | MOD_BIT(KC_LALT) | MOD_BIT(KC_LGUI));
+}
 
 void matrix_scan_user(void) {
   LEADER_DICTIONARY() {
@@ -827,5 +838,18 @@ void matrix_scan_user(void) {
       unregister_code(KC_A);
       unregister_code(KC_LGUI);
     }
+    SEQ_TWO_KEYS(KC_R, KC_E) {
+      reset_keyboard();
+    }
+    SEQ_TWO_KEYS(KC_S, KC_A) { go_to_screen(1); }
+    SEQ_TWO_KEYS(KC_S, KC_R) { go_to_screen(2); }
+    SEQ_TWO_KEYS(KC_S, KC_S) { go_to_screen(3); }
+    SEQ_TWO_KEYS(KC_S, KC_T) { go_to_screen(4); }
+    SEQ_TWO_KEYS(KC_S, KC_G) { go_to_screen(5); }
+    SEQ_TWO_KEYS(KC_S, KC_M) { go_to_screen(6); }
+    SEQ_TWO_KEYS(KC_S, KC_N) { go_to_screen(7); }
+    SEQ_TWO_KEYS(KC_S, KC_E) { go_to_screen(8); }
+    SEQ_TWO_KEYS(KC_S, KC_I) { go_to_screen(9); }
+    SEQ_TWO_KEYS(KC_S, KC_O) { go_to_screen(10); }
   }
 }
