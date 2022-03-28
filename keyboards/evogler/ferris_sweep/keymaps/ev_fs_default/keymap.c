@@ -691,39 +691,51 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 
 
 const keypos_t PROGMEM hand_swap_config[MATRIX_ROWS][MATRIX_COLS] = {
-  {{11, 0}, {10, 0}, {9, 0}, {8, 0}, {7, 0}, {6, 0}, {5, 0}, {4, 0}, {3, 0}, {2, 0}, {1, 0}, {0, 0}},
-  {{11, 1}, {10, 1}, {9, 1}, {8, 1}, {7, 1}, {6, 1}, {5, 1}, {4, 1}, {3, 1}, {2, 1}, {1, 1}, {0, 1}},
-  {{11, 2}, {10, 2}, {9, 2}, {8, 2}, {7, 2}, {6, 2}, {5, 2}, {4, 2}, {3, 2}, {2, 2}, {1, 2}, {0, 2}},
-  {{11, 3}, {10, 3}, {9, 3}, {8, 3}, {7, 3}, {6, 3}, {5, 3}, {4, 3}, {3, 3}, {2, 3}, {1, 3}, {0, 3}},
+    // Left
+    {{4, 4}, {3, 4}, {2, 4}, {1, 4}, {0, 4}},
+    {{4, 5}, {3, 5}, {2, 5}, {1, 5}, {0, 5}},
+    {{4, 6}, {3, 6}, {2, 6}, {1, 6}, {0, 6}},
+    {{1, 7}, {0, 7}, {2, 7}, {3, 7}, {4, 7}},
+    // Right
+    {{4, 0}, {3, 0}, {2, 0}, {1, 0}, {0, 0}},
+    {{4, 1}, {3, 1}, {2, 1}, {1, 1}, {0, 1}},
+    {{4, 2}, {3, 2}, {2, 2}, {1, 2}, {0, 2}},
+    {{1, 3}, {0, 3}, {2, 3}, {3, 3}, {4, 3}}
 };
 
 #define _ KC_NO
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-	[0] = LAYOUT_ortho_4x12(
-        KC_Q, KC_W, KC_F, KC_P, KC_B,  _, _,  KC_J, KC_L, KC_U, KC_Y, KC_LEAD,
-        KC_A, KC_R, KC_S, KC_T, KC_G,  _, _,  KC_M, KC_N, KC_E, KC_I, KC_O,
-        LSFT_T(KC_Z), KC_X, KC_C, KC_D, KC_V,  _, _,  KC_K, KC_H, KC_COMM, KC_DOT, RSFT_T(KC_QUOT),
-        _, _, _,  MO(1), KC_LGUI,      _, _,   KC_SPC, MO(2), _, _, _
+	[0] = LAYOUT_split_3x5_2(
+        KC_Q, KC_W, KC_F, KC_P, KC_B,              KC_J, KC_L, KC_U, KC_Y, KC_LEAD,
+        KC_A, KC_R, KC_S, KC_T, KC_G,              KC_M, KC_N, KC_E, KC_I, KC_O,
+        LSFT_T(KC_Z), KC_X, KC_C, KC_D, KC_V,         KC_K, KC_H, KC_COMM, KC_DOT, RSFT_T(KC_QUOT),
+                    MO(1), KC_LGUI,            KC_SPC, MO(2)
         ),
-	[1] = LAYOUT_ortho_4x12(
-        KC_LT, KC_LCBR, MY_BRACE, KC_LPRN, KC_SLSH,  _, _,  KC_GRV, KC_SCLN, KC_EQL, KC_MINS, KC_BSLS,
-        KC_1, KC_2, KC_3, KC_4, KC_5,              _, _,  KC_6, KC_7, KC_8, KC_9, KC_0,
-        KC_LSFT, _, _, _, _,   _, _,     _, _, _, _, KC_RSFT,
-        _, _, _, KC_TRNS, KC_TRNS,    _, _,   KC_SPC, KC_TRNS, _, _, _
+	[1] = LAYOUT_split_3x5_2(
+        KC_LT, KC_LCBR, MY_BRACE, KC_LPRN, KC_SLSH,         KC_GRV, KC_SCLN, KC_EQL, KC_MINS, KC_BSLS,
+        KC_1, KC_2, KC_3, KC_4, KC_5,                  KC_6, KC_7, KC_8, KC_9, KC_0,
+        KC_LSFT,  _, _, _, _,                       _, _, _, _, KC_RSFT,
+                 KC_TRNS, KC_TRNS,                   KC_SPC, KC_TRNS
         ),
-    [2] = LAYOUT_ortho_4x12(
-        KC_ESC, G(KC_W), _, _, _,     _, _,                   KC_PGUP, KC_BSPC, KC_TAB, KC_HOME, KC_END,
-        G(KC_A), KC_LSHIFT, KC_LALT, KC_LGUI, _,  _, _,  KC_PGDN, KC_LEFT, KC_DOWN, KC_UP, KC_RIGHT,
-        G(KC_Z), G(KC_X), G(KC_C), G(KC_D), G(KC_V),  _, _,    KC_ENT, A(KC_LEFT), A(KC_BSPC), _, A(KC_RIGHT),
-        _, _, _, KC_TRNS, KC_ENT,    _, _,    KC_TRNS, KC_TRNS, _, _, _
+    [2] = LAYOUT_split_3x5_2(
+        KC_ESC, G(KC_W), _, _, _,                        KC_PGUP, KC_BSPC, KC_TAB, KC_HOME, KC_END,
+        G(KC_A), KC_LSHIFT, KC_LALT, KC_LGUI, _,        KC_PGDN, KC_LEFT, KC_DOWN, KC_UP, KC_RIGHT,
+        G(KC_Z), G(KC_X), G(KC_C), G(KC_D), G(KC_V),         KC_ENT, A(KC_LEFT), A(KC_BSPC), TO(4), A(KC_RIGHT),
+                        KC_TRNS, KC_ENT,                KC_TRNS, KC_TRNS
         ),
-	[3] = LAYOUT_ortho_4x12(
-        RESET, FORCE_REP, KC_RBRC, _, _,    _, _,   KC_BRID, KC_BRIU, KC_VOLD, KC_VOLU, KC_MUTE,
-        G(A(S(KC_1))), G(A(S(KC_2))), G(A(S(KC_3))), G(A(S(KC_4))), G(A(S(KC_5))),   _, _,  G(A(S(KC_6))), G(A(S(KC_7))), G(A(S(KC_8))), G(A(S(KC_9))), G(A(S(KC_0))),
-        _, _, _, _, _,          _, _,     _, _, _, _, _,
-        _, _, _, KC_TRNS, _,    _, _,    _, KC_TRNS, _, _, _
-        )
+	[3] = LAYOUT_split_3x5_2(
+        RESET, FORCE_REP, KC_RBRC, _, _,              KC_BRID, KC_BRIU, KC_VOLD, KC_VOLU, KC_MUTE,
+        G(A(S(KC_1))), G(A(S(KC_2))), G(A(S(KC_3))), G(A(S(KC_4))), G(A(S(KC_5))),      G(A(S(KC_6))), G(A(S(KC_7))), G(A(S(KC_8))), G(A(S(KC_9))), G(A(S(KC_0))),
+        _, _, _, _, _,                   _, _, _, _, _,
+                    KC_TRNS, _,         _, KC_TRNS
+        ),
+    [4] = LAYOUT_split_3x5_2(
+        _, _, _, _, _,                                 _, _, _, _, _,
+        _, _, _, _, _,                                 _, KC_MS_L, KC_MS_D, KC_MS_U, KC_MS_R,
+        _, _, _, _, _,                                 _, _, _, _, _,
+                 TO(0), _,                                 KC_BTN1, TO(0)
+        ),
 };
 
 
@@ -786,10 +798,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 break;
             case MY_BRACE:
                 if (get_mods() & (MOD_BIT(KC_LSHIFT) | MOD_BIT(KC_RSHIFT))) {
-                    uint16_t temp_mods = get_mods();
-                    clear_mods();
-                    tap_code16(KC_RBRC);
-                    set_mods(temp_mods);
+                    // uint16_t temp_mods = get_mods();
+                    // clear_mods();
+                    // tap_code16(KC_RBRC);
+                    // set_mods(temp_mods);
+                    SEND_STRING("]");
                 } else {
                     tap_code16(KC_LBRC);
                 }

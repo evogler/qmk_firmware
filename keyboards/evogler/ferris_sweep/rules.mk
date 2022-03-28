@@ -16,10 +16,9 @@ NKRO_ENABLE = yes           # Enable N-Key Rollover
 BACKLIGHT_ENABLE = no       # Enable keyboard backlight functionality
 RGBLIGHT_ENABLE = no        # Enable keyboard RGB underglow
 AUDIO_ENABLE = no           # Audio output
-OLED_ENABLE = yes
-OLED_DRIVER = SSD1306
-
-LAYOUTS = ortho_4x12
+OLED_ENABLE = no
+SPLIT_KEYBOARD = yes        # Use shared split_common code
+LAYOUTS = split_3x5_2
 
 # Added by me
 COMBO_ENABLE = yes
